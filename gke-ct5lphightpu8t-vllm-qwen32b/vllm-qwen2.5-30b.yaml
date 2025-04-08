@@ -18,10 +18,10 @@ spec:
         gke-gcsfuse/memory-limit: "0"
         gke-gcsfuse/ephemeral-storage-limit: "0"
     spec:
-      serviceAccountName: KSA_NAME
+      serviceAccountName: KSA_NAME #UPDATE
       nodeSelector:
         cloud.google.com/gke-tpu-topology: 2x4
-        cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice # Update accelerator spec
+        cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice # Changed accelerator spec
       containers:
       - name: vllm-tpu
         image: docker.io/vllm/vllm-tpu:2e33fe419186c65a18da6668972d61d7bbc31564
@@ -30,8 +30,8 @@ spec:
         - --host=0.0.0.0
         - --port=8000
         - --tensor-parallel-size=8
-        - --max-model-len=2048 # Update max-model-len (optional)
-        - --model=Qwen/Qwen2.5-32B # Update to Qwen
+        - --max-model-len=8192 # NOTE: Reduce max-model-len if OOM occurs
+        - --model=Qwen/Qwen2.5-32B # Changed to Qwen
         - --download-dir=/data
         env: 
         - name: HUGGING_FACE_HUB_TOKEN
@@ -68,7 +68,7 @@ spec:
         csi:
           driver: gcsfuse.csi.storage.gke.io
           volumeAttributes:
-            bucketName: GSBUCKET
+            bucketName: GSBUCKET #UPDATE
             mountOptions: "implicit-dirs,file-cache:enable-parallel-downloads:true,file-cache:parallel-downloads-per-file:100,file-cache:max-parallel-downloads:-1,file-cache:download-chunk-size-mb:10,file-cache:max-size-mb:-1"
 ---
 apiVersion: v1
