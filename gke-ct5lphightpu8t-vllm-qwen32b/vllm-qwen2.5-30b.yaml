@@ -18,7 +18,7 @@ spec:
         gke-gcsfuse/memory-limit: "0"
         gke-gcsfuse/ephemeral-storage-limit: "0"
     spec:
-      serviceAccountName: vllm-gcs-service
+      serviceAccountName: KSA_NAME
       nodeSelector:
         cloud.google.com/gke-tpu-topology: 2x4
         cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice
@@ -67,7 +67,7 @@ spec:
         csi:
           driver: gcsfuse.csi.storage.gke.io
           volumeAttributes:
-            bucketName: eh-demo-bucket-tpu
+            bucketName: GSBUCKET
             mountOptions: "implicit-dirs,file-cache:enable-parallel-downloads:true,file-cache:parallel-downloads-per-file:100,file-cache:max-parallel-downloads:-1,file-cache:download-chunk-size-mb:10,file-cache:max-size-mb:-1"
 ---
 apiVersion: v1
