@@ -21,7 +21,7 @@ spec:
       serviceAccountName: KSA_NAME
       nodeSelector:
         cloud.google.com/gke-tpu-topology: 2x4
-        cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice
+        cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice # Update accelerator spec
       containers:
       - name: vllm-tpu
         image: docker.io/vllm/vllm-tpu:2e33fe419186c65a18da6668972d61d7bbc31564
@@ -30,8 +30,8 @@ spec:
         - --host=0.0.0.0
         - --port=8000
         - --tensor-parallel-size=8
-        - --max-model-len=2048
-        - --model=Qwen/Qwen2.5-32B
+        - --max-model-len=2048 # Update max-model-len (optional)
+        - --model=Qwen/Qwen2.5-32B # Update to Qwen
         - --download-dir=/data
         env: 
         - name: HUGGING_FACE_HUB_TOKEN
@@ -46,6 +46,7 @@ spec:
         resources:
           limits:
             google.com/tpu: 8
+        # Readiness probe commented out to prevent timeout issue.
         # readinessProbe:
         #   tcpSocket:
         #     port: 8000
