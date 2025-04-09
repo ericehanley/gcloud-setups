@@ -12,8 +12,7 @@ export HF_TOKEN=<hf_token> && \
 export CLUSTER_VERSION=1.32.2-gke.1182001 && \
 export GSBUCKET=<gs_bucket> && \
 export KSA_NAME=<ksa_name> && \
-export NAMESPACE=<namespace> && \
-export RESERVATION_NAME=<reservation_name>
+export NAMESPACE=<namespace>
 
 # Create cluster
 # ALTERED: Zonal cluster instead of regional.
@@ -31,8 +30,6 @@ gcloud container node-pools create ct5lp-hightpu-8t-pool \
     --num-nodes=1 \
     --machine-type=ct5lp-hightpu-8t	 \
     --cluster=${CLUSTER_NAME} \
-    --reservation-affinity=specific \
-    --reservation=${RESERVATION_NAME} \
     --enable-autoscaling --total-min-nodes=1 --total-max-nodes=2
 
 # Get credentials
