@@ -18,7 +18,8 @@ export NAMESPACE=<namespace>
 # ALTERED: Zonal cluster instead of regional.
 gcloud container clusters create ${CLUSTER_NAME} \
     --project=${PROJECT_ID} \
-    --zone=${ZONE} \
+    --region=${REGION} \
+    --node-locations=${ZONE} \
     --cluster-version=${CLUSTER_VERSION} \
     --workload-pool=${PROJECT_ID}.svc.id.goog \
     --addons GcsFuseCsiDriver
@@ -26,10 +27,13 @@ gcloud container clusters create ${CLUSTER_NAME} \
 # Create v5e Node Pool
 # ALTERED: machine type, zonal, added reservation variables.
 gcloud container node-pools create ct5lp-hightpu-8t-pool \
-    --zone=${ZONE} \
+    --region=${REGION} \
+    --node-locations=${ZONE} \
     --num-nodes=1 \
     --machine-type=ct5lp-hightpu-8t	 \
     --cluster=${CLUSTER_NAME} \
+    --reservation-affinity=specific \
+    --reservation=${RESERVATION_NAME} \
     --enable-autoscaling --total-min-nodes=1 --total-max-nodes=2
 
 # Get credentials

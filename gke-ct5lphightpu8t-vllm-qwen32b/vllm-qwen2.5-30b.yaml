@@ -24,13 +24,13 @@ spec:
         cloud.google.com/gke-tpu-accelerator: tpu-v5-lite-podslice # Changed accelerator spec
       containers:
       - name: vllm-tpu
-        image: docker.io/vllm/vllm-tpu:2e33fe419186c65a18da6668972d61d7bbc31564
+        image: docker.io/vllm/vllm-tpu:73aa7041bfee43581314e6f34e9a657137ecc092
         command: ["python3", "-m", "vllm.entrypoints.openai.api_server"]
         args:
         - --host=0.0.0.0
         - --port=8000
         - --tensor-parallel-size=8
-        - --max-model-len=8192 # NOTE: Reduce max-model-len if OOM occurs
+        - --max-model-len=4096 # NOTE: Reduce max-model-len if OOM occurs
         - --model=Qwen/Qwen2.5-32B # Changed to Qwen
         - --download-dir=/data
         env: 
