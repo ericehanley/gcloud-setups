@@ -15,7 +15,6 @@ export KSA_NAME=<ksa_name> && \
 export NAMESPACE=<namespace>
 
 # Create cluster
-# ALTERED: Zonal cluster instead of regional.
 gcloud container clusters create ${CLUSTER_NAME} \
     --project=${PROJECT_ID} \
     --region=${REGION} \
@@ -86,3 +85,29 @@ curl http://$vllm_service:8000/v1/completions \
     "max_tokens": 7,
     "temperature": 0
 }'
+
+# Custom Metrics Stack Driver
+kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/k8s-stackdriver/master/custom-metrics-stackdriver-adapter/deploy/production/adapter_new_resource_model.yaml
+
+# Add monitoring viewer role to Custom Metrics Stack Driver SA
+gcloud projects add-iam-policy-binding projects/${PROJECT_ID} \
+    --role roles/monitoring.viewer \
+    --member=principal://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/${PROJECT_ID}.svc.id.goog/subject/ns/custom-metrics/sa/custom-metrics-stackdriver-adapter
+
+# Deploy monitoring pod
+kubectl apply -f vllm_pod_monitor.yaml -n ${NAMESPACE}
+
+# Run load
+chmod +x load.sh
+nohup ./load.sh &
+
+# Deploy HPA auto scaling
+kubectl apply -f vllm-hpa.yaml -n ${NAMESPACE}
+
+# Watch HPA
+kubectl get hpa --watch -n ${NAMESPACE}
+
+# Clean up
+ps -ef | grep load.sh | awk '{print $2}' | xargs -n1 kill -9
+gcloud container clusters delete ${CLUSTER_NAME} \
+  --region=${REGION}
